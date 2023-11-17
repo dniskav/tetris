@@ -4,6 +4,8 @@ const context = canvas.getContext('2d');
 const BLOCK_SIZE = 20;
 const BOARD_WIDTH = 14;
 const BOARD_HEIGHT = 30;
+const TOP_LEVEL_SCORE = 110;
+const INCREASE_VELOCITY_FACTOR = 1.2;
 
 const PIECES = [
   [
@@ -43,6 +45,8 @@ canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
 context.scale(BLOCK_SIZE, BLOCK_SIZE);
 
 let score = 0;
+let velocity = 500;
+let level = 1;
 
 // create board
 // const board = new Array(12).fill(new Array(10).fill(0));
@@ -167,6 +171,7 @@ function solidifyPiece() {
   if(checkCollision()) {
     alert('Game Over!');
     board.forEach(row => row.fill(0));
+    velocity = 500;
   }
 
 }
@@ -186,8 +191,14 @@ function removeRows() {
     const newRow = Array(BOARD_WIDTH).fill(0);
     board.unshift(newRow);
     score += 10;
-    $score.textContent = score;
-  })
+    if (score > TOP_LEVEL_SCORE * level) levelUp();
+  });
+
+}
+
+function levelUp() {
+  velocity = velocity / INCREASE_VELOCITY_FACTOR;
+  level++;
 }
 
 let dropCounter = 0;
@@ -200,7 +211,7 @@ function update(time = 0) {
 
   dropCounter += deltatime;
 
-  if(dropCounter > 1000) {
+  if(dropCounter > velocity) {
     piece.position.y++;
     dropCounter = 0;
 
@@ -228,6 +239,9 @@ function draw() {
 
   context.fillStyle = 'red';
   context.fillText(`Score: ${score}`, 16, 10);
+
+  context.fillStyle = 'red';
+  context.fillText(`Level: ${level}`, 16, 12);
 
   board.forEach((row, y) => {
     row.forEach((col, x) => {
