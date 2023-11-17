@@ -1,0 +1,20 @@
+* {
+  background-color: #222;
+}
+
+body {
+  height: 100vh;
+  place-content: center;
+  display: grid;
+}
+
+.score {
+  color: red;
+  font-size: 3em;
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  justify-content: flex-start;
+}
